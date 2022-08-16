@@ -13,5 +13,10 @@ __all__ = ('ThreadRequest', 'MethodType',)
 def _CreateThread(target: Callable[..., object], *args, **kwargs) -> None:
     Thread(target=target, args=args, kwargs=kwargs).start()
 
-def ThreadRequest(url: str, callback: Callable[[requests.Response], None], *, method: MethodType = MethodType.GET, args: Dict[str, Any] = {}, **kwargs: Dict[str, Any]) -> None:
-    _CreateThread(target=lambda: callback(method(url, args, **kwargs)))
+def ThreadRequest(url: str, callback: Callable[[requests.Response], None] = None, *, method: MethodType = MethodType.GET, args: Dict[str, Any] = {}, **kwargs: Dict[str, Any]) -> None:
+    def wrapper(f: Callable[[requests.Response], None] = None):
+        if f == None:
+            _CreateThread(target=lambda: callback(method(url, args, **kwargs)))
+            return
+        _CreateThread(target=lambda: f(method(url, args, **kwargs)))
+    return wrapper
