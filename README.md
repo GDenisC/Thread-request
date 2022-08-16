@@ -31,7 +31,7 @@ sended
 import requests
 from threq import *
 
-@ThreadRequest('http://localhost:8080/?string=request', callback, method=MethodType.GET)
+@ThreadRequest('http://localhost:8080/?string=request', method=MethodType.GET)
 def callback(res: requests.Response):
     json: dict[str, str] = res.json()
 
